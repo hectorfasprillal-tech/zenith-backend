@@ -1,4 +1,4 @@
-name: Build amd64 backend image
+name: Build multi-arch backend image
 
 on:
   push:
@@ -7,11 +7,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest   # amd64 REAL
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -19,10 +21,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image (amd64)
+      - name: Build and push multi-arch image
         run: |
-          docker build -t hectorneg/zenith-backend:amd64 .
-
-      - name: Push Docker image
-        run: |
-          docker push hectorneg/zenith-backend:amd64
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t hectorneg/zenith-backend:latest \
+            --push .
