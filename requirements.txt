@@ -1,0 +1,13 @@
+torch
+torchvision
+torchaudio
+sentence-transformers
+pinecone
+flask
+flask-cors
+peft
+bitsandbytes
+langchain
+langchain-community
+faiss-cpu
+gunicorn>=21.0
